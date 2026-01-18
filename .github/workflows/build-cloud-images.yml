@@ -1,0 +1,126 @@
+name: Build Cloud Images
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-utils xz-utils
+
+      - name: Create output directory
+        run: mkdir -p images
+
+      - name: Download Ubuntu Noble
+        run: |
+          curl -L -o images/ubuntu-noble-amd64.img \
+            https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+
+      - name: Download Ubuntu Jammy
+        run: |
+          curl -L -o images/ubuntu-jammy-amd64.img \
+            https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+
+      - name: Download Debian 12 Bookworm
+        run: |
+          curl -L -o images/debian-12-bookworm-amd64.qcow2 \
+            https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
+
+      - name: Download Debian 13 Trixie
+        run: |
+          curl -L -o images/debian-13-trixie-amd64.qcow2 \
+            https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+
+      - name: Download FreeBSD 15.0 UFS
+        run: |
+          curl -L -o images/freebsd-15.0-ufs-amd64.qcow2.xz \
+            https://download.freebsd.org/releases/VM-IMAGES/15.0-RELEASE/amd64/Latest/FreeBSD-15.0-RELEASE-amd64-ufs.qcow2.xz
+
+      - name: Download FreeBSD 15.0 ZFS
+        run: |
+          curl -L -o images/freebsd-15.0-zfs-amd64.qcow2.xz \
+            https://download.freebsd.org/releases/VM-IMAGES/15.0-RELEASE/amd64/Latest/FreeBSD-15.0-RELEASE-amd64-zfs.qcow2.xz
+
+      - name: Convert Ubuntu Noble to qcow2
+        run: |
+          qemu-img convert -f qcow2 -O qcow2 \
+            images/ubuntu-noble-amd64.img \
+            images/ubuntu-noble-amd64.qcow2
+          rm images/ubuntu-noble-amd64.img
+
+      - name: Convert Ubuntu Jammy to qcow2
+        run: |
+          qemu-img convert -f qcow2 -O qcow2 \
+            images/ubuntu-jammy-amd64.img \
+            images/ubuntu-jammy-amd64.qcow2
+          rm images/ubuntu-jammy-amd64.img
+
+      - name: Decompress FreeBSD UFS
+        run: |
+          unxz images/freebsd-15.0-ufs-amd64.qcow2.xz
+
+      - name: Decompress FreeBSD ZFS
+        run: |
+          unxz images/freebsd-15.0-zfs-amd64.qcow2.xz
+
+      - name: Generate SHA256 checksums
+        run: |
+          cd images
+          sha256sum *.qcow2 > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cd images
+          echo "## Cloud Images" > ../RELEASE_NOTES.md
+          echo "" >> ../RELEASE_NOTES.md
+          echo "Build date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> ../RELEASE_NOTES.md
+          echo "Commit: ${{ github.sha }}" >> ../RELEASE_NOTES.md
+          echo "" >> ../RELEASE_NOTES.md
+          echo "### Included Images" >> ../RELEASE_NOTES.md
+          echo "" >> ../RELEASE_NOTES.md
+          echo "| Image | Source |" >> ../RELEASE_NOTES.md
+          echo "|-------|--------|" >> ../RELEASE_NOTES.md
+          echo "| ubuntu-noble-amd64.qcow2 | Ubuntu 24.04 LTS (Noble Numbat) |" >> ../RELEASE_NOTES.md
+          echo "| ubuntu-jammy-amd64.qcow2 | Ubuntu 22.04 LTS (Jammy Jellyfish) |" >> ../RELEASE_NOTES.md
+          echo "| debian-12-bookworm-amd64.qcow2 | Debian 12 (Bookworm) |" >> ../RELEASE_NOTES.md
+          echo "| debian-13-trixie-amd64.qcow2 | Debian 13 (Trixie) |" >> ../RELEASE_NOTES.md
+          echo "| freebsd-15.0-ufs-amd64.qcow2 | FreeBSD 15.0-RELEASE (UFS) |" >> ../RELEASE_NOTES.md
+          echo "| freebsd-15.0-zfs-amd64.qcow2 | FreeBSD 15.0-RELEASE (ZFS) |" >> ../RELEASE_NOTES.md
+          echo "" >> ../RELEASE_NOTES.md
+          echo "### SHA256 Checksums" >> ../RELEASE_NOTES.md
+          echo "" >> ../RELEASE_NOTES.md
+          echo '```' >> ../RELEASE_NOTES.md
+          cat SHA256SUMS >> ../RELEASE_NOTES.md
+          echo '```' >> ../RELEASE_NOTES.md
+
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "tag=v$(date -u '+%Y%m%d')-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Cloud Images ${{ steps.tag.outputs.tag }}
+          body_path: RELEASE_NOTES.md
+          files: |
+            images/*.qcow2
+            images/SHA256SUMS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
