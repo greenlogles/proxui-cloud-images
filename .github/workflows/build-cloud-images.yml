@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 0 1 * *'
 
 permissions:
   contents: write
@@ -195,3 +197,53 @@ jobs:
             images/SHA256SUMS
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update cloud_images.json
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          BASE_URL="https://github.com/greenlogles/proxui-cloud-images/releases/download/${TAG}"
+          cat << EOF | python3 -m json.tool > cloud_images.json
+          {
+            "ubuntu-24.04": {
+              "name": "Ubuntu 24.04 LTS (Noble Numbat) (proxui mirror)",
+              "url": "${BASE_URL}/ubuntu-noble-amd64.qcow2"
+            },
+            "ubuntu-22.04": {
+              "name": "Ubuntu 22.04 LTS (Jammy Jellyfish) (proxui mirror)",
+              "url": "${BASE_URL}/ubuntu-jammy-amd64.qcow2"
+            },
+            "debian-12": {
+              "name": "Debian 12 (Bookworm) (proxui mirror)",
+              "url": "${BASE_URL}/debian-12-bookworm-amd64.qcow2"
+            },
+            "debian-13": {
+              "name": "Debian 13 (Trixie) (proxui mirror)",
+              "url": "${BASE_URL}/debian-13-trixie-amd64.qcow2"
+            },
+            "rocky-10": {
+              "name": "Rocky Linux 10 LVM (proxui mirror)",
+              "url": "${BASE_URL}/rocky-10-amd64.qcow2"
+            },
+            "rocky-9": {
+              "name": "Rocky Linux 9 (proxui mirror)",
+              "url": "${BASE_URL}/rocky-9-amd64.qcow2"
+            },
+            "fedora-43": {
+              "name": "Fedora 43 (proxui mirror)",
+              "url": "${BASE_URL}/fedora-43-amd64.qcow2"
+            },
+            "fedora-42": {
+              "name": "Fedora 42 (proxui mirror)",
+              "url": "${BASE_URL}/fedora-42-amd64.qcow2"
+            },
+            "freebsd-15.0": {
+              "name": "FreeBSD 15.0-RELEASE UFS (proxui mirror)",
+              "url": "${BASE_URL}/freebsd-15.0-ufs-amd64.qcow2"
+            }
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cloud_images.json
+          git commit -m "Update cloud_images.json for ${TAG} [skip ci]"
+          git push
