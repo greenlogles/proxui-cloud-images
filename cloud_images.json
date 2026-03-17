@@ -1,38 +1,38 @@
 {
-  "ubuntu-24.04": {
-    "name": "Ubuntu 24.04 LTS (Noble Numbat) (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/ubuntu-noble-amd64.qcow2"
-  },
-  "ubuntu-22.04": {
-    "name": "Ubuntu 22.04 LTS (Jammy Jellyfish) (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/ubuntu-jammy-amd64.qcow2"
-  },
-  "debian-12": {
-    "name": "Debian 12 (Bookworm) (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/debian-12-bookworm-amd64.qcow2"
-  },
-  "debian-13": {
-    "name": "Debian 13 (Trixie) (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/debian-13-trixie-amd64.qcow2"
-  },
-  "rocky-10": {
-    "name": "Rocky Linux 10 LVM (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/rocky-10-amd64.qcow2"
-  },
-  "rocky-9": {
-    "name": "Rocky Linux 9 (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/rocky-9-amd64.qcow2"
-  },
-  "fedora-43": {
-    "name": "Fedora 43 (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/fedora-43-amd64.qcow2"
-  },
-  "fedora-42": {
-    "name": "Fedora 42 (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/fedora-42-amd64.qcow2"
-  },
-  "freebsd-15.0": {
-    "name": "FreeBSD 15.0-RELEASE UFS (proxui mirror)",
-    "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260119-dbdd07a/freebsd-15.0-ufs-amd64.qcow2"
-  }
+    "ubuntu-24.04": {
+        "name": "Ubuntu 24.04 LTS (Noble Numbat) (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/ubuntu-noble-amd64.qcow2"
+    },
+    "ubuntu-22.04": {
+        "name": "Ubuntu 22.04 LTS (Jammy Jellyfish) (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/ubuntu-jammy-amd64.qcow2"
+    },
+    "debian-12": {
+        "name": "Debian 12 (Bookworm) (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/debian-12-bookworm-amd64.qcow2"
+    },
+    "debian-13": {
+        "name": "Debian 13 (Trixie) (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/debian-13-trixie-amd64.qcow2"
+    },
+    "rocky-10": {
+        "name": "Rocky Linux 10 LVM (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/rocky-10-amd64.qcow2"
+    },
+    "rocky-9": {
+        "name": "Rocky Linux 9 (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/rocky-9-amd64.qcow2"
+    },
+    "fedora-43": {
+        "name": "Fedora 43 (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/fedora-43-amd64.qcow2"
+    },
+    "fedora-42": {
+        "name": "Fedora 42 (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/fedora-42-amd64.qcow2"
+    },
+    "freebsd-15.0": {
+        "name": "FreeBSD 15.0-RELEASE UFS (proxui mirror)",
+        "url": "https://github.com/greenlogles/proxui-cloud-images/releases/download/v20260317-696c215/freebsd-15.0-ufs-amd64.qcow2"
+    }
 }
