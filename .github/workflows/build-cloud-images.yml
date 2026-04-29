@@ -26,6 +26,11 @@ jobs:
       - name: Create output directory
         run: mkdir -p images
 
+      - name: Download Ubuntu Resolute
+        run: |
+          curl -L -o images/ubuntu-resolute-amd64.img \
+            https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img
+
       - name: Download Ubuntu Noble
         run: |
           curl -L -o images/ubuntu-noble-amd64.img \
@@ -75,6 +80,13 @@ jobs:
         run: |
           unxz images/freebsd-15.0-ufs-amd64.qcow2.xz
           mv images/freebsd-15.0-ufs-amd64.qcow2 images/freebsd-15.0-ufs-amd64-orig.qcow2
+
+      - name: Convert Ubuntu Resolute to compressed qcow2
+        run: |
+          qemu-img convert -c -f qcow2 -O qcow2 \
+            images/ubuntu-resolute-amd64.img \
+            images/ubuntu-resolute-amd64.qcow2
+          rm images/ubuntu-resolute-amd64.img
 
       - name: Convert Ubuntu Noble to compressed qcow2
         run: |
@@ -158,6 +170,7 @@ jobs:
           echo "" >> ../RELEASE_NOTES.md
           echo "| Image | Source |" >> ../RELEASE_NOTES.md
           echo "|-------|--------|" >> ../RELEASE_NOTES.md
+          echo "| ubuntu-resolute-amd64.qcow2 | Ubuntu 26.04 LTS (Resolute Raccoon) |" >> ../RELEASE_NOTES.md
           echo "| ubuntu-noble-amd64.qcow2 | Ubuntu 24.04 LTS (Noble Numbat) |" >> ../RELEASE_NOTES.md
           echo "| ubuntu-jammy-amd64.qcow2 | Ubuntu 22.04 LTS (Jammy Jellyfish) |" >> ../RELEASE_NOTES.md
           echo "| debian-12-bookworm-amd64.qcow2 | Debian 12 (Bookworm) |" >> ../RELEASE_NOTES.md
@@ -204,6 +217,10 @@ jobs:
           BASE_URL="https://github.com/greenlogles/proxui-cloud-images/releases/download/${TAG}"
           cat << EOF | python3 -m json.tool > cloud_images.json
           {
+            "ubuntu-26.04": {
+              "name": "Ubuntu 26.04 LTS (Resolute Raccoon) (proxui mirror)",
+              "url": "${BASE_URL}/ubuntu-resolute-amd64.qcow2"
+            },
             "ubuntu-24.04": {
               "name": "Ubuntu 24.04 LTS (Noble Numbat) (proxui mirror)",
               "url": "${BASE_URL}/ubuntu-noble-amd64.qcow2"
